@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const homedir = require('homedir')
+const { env } = process;
+const deviceCredentials = require(env.DEVICECREDENTIALS_FILE);
 const GoogleAssistant = require('./src/services/GoogleAssistant/googleassistant');
-const deviceCredentials = require('./auth/devicecredentials.json');
 
 const CREDENTIALS = {
     client_id: deviceCredentials.client_id,
