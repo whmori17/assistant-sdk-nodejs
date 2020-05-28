@@ -15,6 +15,8 @@
  */
 
 'use strict';
+
+require('dotenv').config();
 const path = require('path');
 const grpc = require('grpc');
 const protoFiles = require('google-proto-files');
@@ -31,7 +33,7 @@ class GoogleAssistant {
   constructor(credentials) {
     GoogleAssistant.prototype.endpoint_ = 'embeddedassistant.googleapis.com';
     this.client = this.createClient_(credentials);
-    this.locale = 'en-US';
+    this.locale = process.env.ASSISTANT_LANG;
     this.deviceModelId = 'default';
     this.deviceInstanceId = 'default';
   }
