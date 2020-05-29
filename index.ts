@@ -16,10 +16,8 @@ const assistantCredentials = {
 
 const assistant = new GoogleAssistant(assistantCredentials);
 
-if (typeof process.argv[2] !== 'undefined') {
-  assistant.assist(process.argv[2]).then(({ text }) => {
-    console.log(text);
-  });
-} else {
-  promptUser(assistant);
-}
+typeof process.argv[2] !== 'undefined'
+  ? assistant.assist(process.argv[2]).then(({ text }) => {
+      console.log(text);
+    })
+  : promptUser(assistant);
