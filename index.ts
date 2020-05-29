@@ -1,7 +1,8 @@
+import * as dotenv from 'dotenv';
 import { GoogleAssistant } from './src/services/GoogleAssistant';
 import { readLine } from 'stdio';
 
-require('dotenv').config();
+dotenv.config();
 
 const { env } = process;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
