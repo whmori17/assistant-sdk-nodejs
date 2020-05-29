@@ -21,9 +21,9 @@ env/bin/google-oauthlib-tool --client-secrets credentials.json \
                              --save
 ```
 
-1. Run `cd google-assistant-grpc`
 1. Run `npm install`
-1. Run `node googleassistant.js`
+2. Run `tsc index.ts`
+3. Run `node index.js`
 
 ```Javascript
 const GoogleAssistant = require('./googleassistant');
