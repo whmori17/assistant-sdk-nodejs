@@ -13,7 +13,7 @@ export async function promptUser(assistant: GoogleAssistant): Promise<any> {
   }
 
   assistant.assist(command).then(({ text }) => {
-    console.log(text);
+    console.log(text ?? '✔');
     promptUser(assistant);
   });
 }
