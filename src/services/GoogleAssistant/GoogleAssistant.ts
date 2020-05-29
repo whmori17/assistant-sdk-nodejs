@@ -14,42 +14,49 @@
  * limitations under the License.
  */
 
-'use strict';
+import { relative } from 'path';
+import { GoogleAssistantCredentials } from '../../models/GoogleAssistantCredentials';
+import { GoogleAssistantResponse } from '../../models/GoogleAssistantResponse';
 
 require('dotenv').config();
-const path = require('path');
 const grpc = require('grpc');
 const protoFiles = require('google-proto-files');
-const resolve = require('resolve');
 const GoogleAuth = require('google-auth-library');
 
 const PROTO_ROOT_DIR = protoFiles('..');
 const embedded_assistant_pb = grpc.load({
   root: PROTO_ROOT_DIR,
-  file: path.relative(PROTO_ROOT_DIR, protoFiles.embeddedAssistant.v1alpha2),
+  file: relative(PROTO_ROOT_DIR, protoFiles.embeddedAssistant.v1alpha2),
 }).google.assistant.embedded.v1alpha2;
 
-class GoogleAssistant {
-  constructor(credentials) {
+export class GoogleAssistant {
+  client: any;
+  locale: string;
+  deviceModelId: string;
+  deviceInstanceId: string;
+  endpoint_: string;
+
+  constructor(credentials: GoogleAssistantCredentials) {
     GoogleAssistant.prototype.endpoint_ = 'embeddedassistant.googleapis.com';
     this.client = this.createClient_(credentials);
     this.locale = process.env.ASSISTANT_LANG;
     this.deviceModelId = 'default';
     this.deviceInstanceId = 'default';
   }
-  createClient_(credentials) {
+
+  createClient_(credentials: GoogleAssistantCredentials) {
     const sslCreds = grpc.credentials.createSsl();
     // https://github.com/google/google-auth-library-nodejs/blob/master/ts/lib/auth/refreshclient.ts
     const auth = new GoogleAuth();
     const refresh = new auth.UserRefreshClient();
-    refresh.fromJSON(credentials, function (res) {});
+    refresh.fromJSON(credentials, function (_res) {});
     const callCreds = grpc.credentials.createFromGoogleCredential(refresh);
     const combinedCreds = grpc.credentials.combineChannelCredentials(sslCreds, callCreds);
     const client = new embedded_assistant_pb.EmbeddedAssistant(this.endpoint_, combinedCreds);
     return client;
   }
 
-  assist(input) {
+  assist(input: string): Promise<any> {
     const config = new embedded_assistant_pb.AssistConfig();
     config.setTextQuery(input);
     config.setAudioOutConfig(new embedded_assistant_pb.AudioOutConfig());
@@ -67,17 +74,17 @@ class GoogleAssistant {
     delete request.audio_in;
     const conversation = this.client.assist();
     return new Promise((resolve, reject) => {
-      let response = {};
+      const assistantResponse: GoogleAssistantResponse = {};
       conversation.on('data', (data) => {
         if (data.device_action) {
-          response.deviceAction = JSON.parse(data.device_action.device_request_json);
+          assistantResponse.deviceAction = JSON.parse(data.device_action.device_request_json);
         } else if (data.dialog_state_out !== null && data.dialog_state_out.supplemental_display_text) {
-          response.text = data.dialog_state_out.supplemental_display_text;
+          assistantResponse.text = data.dialog_state_out.supplemental_display_text;
         }
       });
-      conversation.on('end', (error) => {
+      conversation.on('end', (_error) => {
         // Response ended, resolve with the whole response.
-        resolve(response);
+        resolve(assistantResponse);
       });
       conversation.on('error', (error) => {
         reject(error);
@@ -87,5 +94,3 @@ class GoogleAssistant {
     });
   }
 }
-
-module.exports = GoogleAssistant;

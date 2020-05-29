@@ -3,3 +3,4 @@ auth/*
 env
 .env
 build
+src/*.js

@@ -1,0 +1,1 @@
+export { GoogleAssistant } from './GoogleAssistant';

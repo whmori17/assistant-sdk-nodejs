@@ -1,0 +1,1 @@
+export { GoogleAssistantResponse } from './GoogleAssistantResponse';
