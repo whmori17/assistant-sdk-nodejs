@@ -1,42 +1,25 @@
 import * as dotenv from 'dotenv';
 import { GoogleAssistant } from './src/services/GoogleAssistant';
-import { readLine } from 'stdio';
+import { promptUser } from './src/services/promptUser';
 
 dotenv.config();
 
 const { env } = process;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const deviceCredentials = require(env.DEVICECREDENTIALS_FILE);
-
-const CREDENTIALS = {
+const assistantCredentials = {
   client_id: deviceCredentials.client_id,
   client_secret: deviceCredentials.client_secret,
   refresh_token: deviceCredentials.refresh_token,
   type: 'authorized_user',
 };
 
-const assistant = new GoogleAssistant(CREDENTIALS);
-// Allow user to continually input questions and receive answers.
-async function promptUser() {
-  console.log('> ');
-  const command = await readLine();
-
-  if (command === 'exit') {
-    console.log('Good bye');
-    await readLine({ close: true });
-    return;
-  }
-
-  assistant.assist(command).then(({ text }) => {
-    console.log(text);
-    promptUser();
-  });
-}
+const assistant = new GoogleAssistant(assistantCredentials);
 
 if (typeof process.argv[2] !== 'undefined') {
   assistant.assist(process.argv[2]).then(({ text }) => {
     console.log(text);
   });
 } else {
-  promptUser();
+  promptUser(assistant);
 }
