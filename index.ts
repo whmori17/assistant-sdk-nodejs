@@ -1,5 +1,5 @@
 import { GoogleAssistant } from './src/services/GoogleAssistant';
-import { ask, readLine } from 'stdio';
+import { readLine } from 'stdio';
 
 require('dotenv').config();
 
