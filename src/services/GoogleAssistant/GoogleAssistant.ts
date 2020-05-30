@@ -15,19 +15,19 @@
  */
 
 import { relative } from 'path';
+import { loadSync } from '@grpc/proto-loader';
+import { credentials, loadPackageDefinition } from 'grpc';
 import { GoogleAssistantCredentials } from '../../models/GoogleAssistantCredentials';
 import { GoogleAssistantResponse } from '../../models/GoogleAssistantResponse';
 
 require('dotenv').config();
-const grpc = require('grpc');
 const protoFiles = require('google-proto-files');
 const GoogleAuth = require('google-auth-library');
 
 const PROTO_ROOT_DIR = protoFiles('..');
-const embedded_assistant_pb = grpc.load({
-  root: PROTO_ROOT_DIR,
-  file: relative(PROTO_ROOT_DIR, protoFiles.embeddedAssistant.v1alpha2),
-}).google.assistant.embedded.v1alpha2;
+const protoFileName = relative(PROTO_ROOT_DIR, protoFiles.embeddedAssistant.v1alpha2);
+const packageDefinition = loadSync(protoFileName);
+const embedded_assistant_pb = loadPackageDefinition(packageDefinition);
 
 export class GoogleAssistant {
   client: any;
@@ -44,14 +44,14 @@ export class GoogleAssistant {
     this.deviceInstanceId = 'default';
   }
 
-  createClient_(credentials: GoogleAssistantCredentials) {
-    const sslCreds = grpc.credentials.createSsl();
+  createClient_(gCredentials: GoogleAssistantCredentials) {
+    const sslCreds = credentials.createSsl();
     // https://github.com/google/google-auth-library-nodejs/blob/master/ts/lib/auth/refreshclient.ts
     const auth = new GoogleAuth();
     const refresh = new auth.UserRefreshClient();
-    refresh.fromJSON(credentials, function (_res) {});
-    const callCreds = grpc.credentials.createFromGoogleCredential(refresh);
-    const combinedCreds = grpc.credentials.combineChannelCredentials(sslCreds, callCreds);
+    refresh.fromJSON(gCredentials, function (_res) {});
+    const callCreds = credentials.createFromGoogleCredential(refresh);
+    const combinedCreds = credentials.combineChannelCredentials(sslCreds, callCreds);
     const client = new embedded_assistant_pb.EmbeddedAssistant(this.endpoint_, combinedCreds);
     return client;
   }
