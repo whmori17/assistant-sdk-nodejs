@@ -18,6 +18,6 @@ const assistant = new GoogleAssistant(assistantCredentials);
 
 typeof process.argv[2] !== 'undefined'
   ? assistant.assist(process.argv[2]).then(({ text }) => {
-      console.log(text);
+      console.log(text ?? '✔');
     })
   : promptUser(assistant);
