@@ -15,8 +15,8 @@
  */
 
 import { relative } from 'path';
-import { GoogleAssistantCredentials } from '../../models/GoogleAssistantCredentials';
-import { GoogleAssistantResponse } from '../../models/GoogleAssistantResponse';
+import { GoogleAssistantCredentials } from '@models/GoogleAssistantCredentials';
+import { GoogleAssistantResponse } from '@models/GoogleAssistantResponse';
 
 require('dotenv').config();
 const grpc = require('grpc');

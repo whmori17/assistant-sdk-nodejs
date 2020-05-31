@@ -1,5 +1,5 @@
-import { GoogleAssistant } from '../GoogleAssistant';
 import { readLine } from 'stdio';
+import { GoogleAssistant } from '@services/GoogleAssistant';
 
 // Allow user to continually input questions and receive answers.
 export async function promptUser(assistant: GoogleAssistant): Promise<any> {
