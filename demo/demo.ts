@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv';
-import { GoogleAssistant } from './src/services/GoogleAssistant';
-import { promptUser } from './src/services/promptUser';
+import { GoogleAssistant, promptUser } from '../build';
 
 dotenv.config();
 

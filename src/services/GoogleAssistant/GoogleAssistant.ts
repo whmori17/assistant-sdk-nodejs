@@ -39,7 +39,7 @@ export class GoogleAssistant {
   constructor(credentials: GoogleAssistantCredentials) {
     GoogleAssistant.prototype.endpoint_ = 'embeddedassistant.googleapis.com';
     this.client = this.createClient_(credentials);
-    this.locale = process.env.ASSISTANT_LANG;
+    this.locale = process.env.ASSISTANT_LANG ?? '';
     this.deviceModelId = 'default';
     this.deviceInstanceId = 'default';
   }
@@ -49,7 +49,7 @@ export class GoogleAssistant {
     // https://github.com/google/google-auth-library-nodejs/blob/master/ts/lib/auth/refreshclient.ts
     const auth = new GoogleAuth();
     const refresh = new auth.UserRefreshClient();
-    refresh.fromJSON(credentials, function (_res) {});
+    refresh.fromJSON(credentials, function (_res: any) {});
     const callCreds = grpc.credentials.createFromGoogleCredential(refresh);
     const combinedCreds = grpc.credentials.combineChannelCredentials(sslCreds, callCreds);
     const client = new embedded_assistant_pb.EmbeddedAssistant(this.endpoint_, combinedCreds);
@@ -75,18 +75,18 @@ export class GoogleAssistant {
     const conversation = this.client.assist();
     return new Promise((resolve, reject) => {
       const assistantResponse: GoogleAssistantResponse = {};
-      conversation.on('data', (data) => {
+      conversation.on('data', (data: any) => {
         if (data.device_action) {
           assistantResponse.deviceAction = JSON.parse(data.device_action.device_request_json);
         } else if (data.dialog_state_out !== null && data.dialog_state_out.supplemental_display_text) {
           assistantResponse.text = data.dialog_state_out.supplemental_display_text;
         }
       });
-      conversation.on('end', (_error) => {
+      conversation.on('end', (_error: Error) => {
         // Response ended, resolve with the whole response.
         resolve(assistantResponse);
       });
-      conversation.on('error', (error) => {
+      conversation.on('error', (error: Error) => {
         reject(error);
       });
       conversation.write(request);

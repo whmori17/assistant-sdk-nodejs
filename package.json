@@ -1,7 +1,10 @@
 {
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "scripts": {
         "start": "node index.js",
-        "demo": "node demo.js",
+        "build": "rm -rf build/* && ttsc",
+        "demo": "yarn build && tsc demo/demo.ts && node demo/demo.js",
         "test": "./node_modules/.bin/ava -c 1 -s ./test/*.js",
         "format": "prettier --config ./.prettierrc.js --write \"./src/**/**/*.ts\"",
         "format:check": "prettier --check \"./src/**/**/*.ts\""
