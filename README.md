@@ -21,9 +21,10 @@ env/bin/google-oauthlib-tool --client-secrets credentials.json \
                              --save
 ```
 
-1. Run `npm install`
-2. Run `tsc index.ts`
-3. Run `node index.js`
+1. Run `yarn install`
+2. Run `yarn build`
+3. Run `yarn build-demo`
+4. Run `yarn start-demo`
 
 ```Javascript
 const GoogleAssistant = require('./googleassistant');
