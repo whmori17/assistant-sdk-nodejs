@@ -21,24 +21,14 @@ env/bin/google-oauthlib-tool --client-secrets credentials.json \
                              --save
 ```
 
+## Demo
+
+Within `demo` folder there is an example you can run by following these steps:
+
 1. Run `yarn install`
 2. Run `yarn build`
 3. Run `yarn build-demo`
 4. Run `yarn start-demo`
-
-```Javascript
-const GoogleAssistant = require('./googleassistant');
-const deviceCredentials = require('./devicecredentials.json');
-
-const CREDENTIALS = {
-  client_id: deviceCredentials.client_id,
-  client_secret: deviceCredentials.client_secret,
-  refresh_token: deviceCredentials.refresh_token,
-  type: "authorized_user"
-};
-
-const assistant = new GoogleAssistant(CREDENTIALS);
-```
 
 ## Usage
 
@@ -51,7 +41,23 @@ The `GoogleAssistant` class has several methods and helpers.
 * `.endConversation()` - Ends a conversation with an Assistant app. Returns a promise.
 * `.setLocale(locale)` - Changes the Assistant locale, in the format **en-US**.
 
-```Javascript
+
+Let's see how to use it:
+
+
+```typescript
+const GoogleAssistant = require('./googleassistant');
+const deviceCredentials = require('./devicecredentials.json');
+
+const CREDENTIALS = {
+  client_id: deviceCredentials.client_id,
+  client_secret: deviceCredentials.client_secret,
+  refresh_token: deviceCredentials.refresh_token,
+  type: "authorized_user"
+};
+
+const assistant = new GoogleAssistant(CREDENTIALS);
+
 assistant.assist('what time is it')
   .then(({ text }) => {
     console.log(text); // Will log "It's 12:30"
