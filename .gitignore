@@ -6,3 +6,4 @@ build/*
 src/**/*.js
 index.js
 demo/demo.js
+yarn-error.log
